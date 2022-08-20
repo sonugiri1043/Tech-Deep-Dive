@@ -7,7 +7,7 @@ Redis (“REmote DIctionary Service”) is an **open-source key-value database s
 
 The most accurate description of Redis is that it's a **data structure server**. This specific nature of Redis has led to much of its popularity and adoption amongst developers.
 
-<image1>
+<img src="images/Redis-1.jpeg"/>
 
 Primarily, Redis is an in-memory database **used as a cache in front of another "real" database like MySQL** or PostgreSQL to help improve application performance. It leverages the speed of memory and alleviates load off the central application database for:
 
@@ -16,17 +16,17 @@ Primarily, Redis is an in-memory database **used as a cache in front of another 
 
 Examples of above data can include session or data caches and leaderboard or roll-up analytics for dashboards.
 
-<image-2>
+<img src="images/Redis-2.jpeg"/>
 
 However, for many use cases, **Redis offers enough guarantees that it can be used as a full-fledged primary database**. Coupled with Redis plug-ins and its various High Availability (HA) setups, Redis as a database has become incredibly useful for certain scenarios and workloads.
 
 Another important aspect is that Redis blurred the lines between a cache and datastore. Important note to understand here is that **reading and manipulating data in memory is much faster than anything possible in traditional datastores using SSDs or HDDs**.
 
-<image-3>
+<img src="images/Redis-3.jpeg"/>
 
 Redis is most commonly compared to Memcached. Here is a current breakdown of capabilities between Redis and Memcache.
 
-<screenshot goes here>
+<img src="images/Redis-vs-memcache.png"/>
 
 ## Redis Architectures
 
@@ -42,7 +42,7 @@ We will be focusing mainly on these configurations:
 Depending on your use case and scale, you can decide to use one setup or another.
 
 ### Single Redis Instance
-<image 4>
+<img src="images/Redis-4.png"/>
 
 Single Redis instance is the most straightforward deployment of Redis. It allows users to set up and run small instances that can help them grow and speed up their services. However, this deployment isn't without shortcomings. For example, if this instance fails or is unavailable, all client calls to Redis will fail and therefore degrade the system's overall performance and speed.
 
@@ -55,7 +55,7 @@ These two flows allow Redis to have long-term storage, support various replicati
 With that said, let us look into more distributed Redis setups you might want to use.
 
 ### Redis HA
-<image 5>
+<img src="images/Redis-5.png"/>
 
 Another popular setup with Redis is the main deployment with a secondary deployment that is kept in sync with replication.  As data is written to the main instance it sends copies of those commands, to a replica client output buffer for secondary instances which facilitates replication. The secondary instances can be one or more instances in your deployment. These instances can help scale reads from Redis or provide failover in case the main is lost.
 
