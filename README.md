@@ -7,8 +7,20 @@ Redis (“REmote DIctionary Service”) is an **open-source key-value database s
 
 The most accurate description of Redis is that it's a **data structure server**. This specific nature of Redis has led to much of its popularity and adoption amongst developers.
 
-<img src="images/Redis-1.jpeg"/>
+## Flexible data structures
+Unlike other key-value data stores that offer limited data structures, Redis has a vast variety of data structures to meet your application needs. Redis data types include:
+- Strings – text or binary data up to 512MB in size
+- Lists – a collection of Strings in the order they were added
+- Sets – an unordered collection of strings with the ability to intersect, union, and diff other Set types
+- Sorted Sets – Sets ordered by a value
+- Hashes – a data structure for storing a list of fields and values
+- Bitmaps – a data type that offers bit level operations
+- HyperLogLogs – a probabilistic data structure to estimate the unique items in a data set
+- Streams - a log data structure Message queue
+- Geospatial - a longitude-/latitude-based entries Maps, "nearby"
+- JSON - a nested, semi-structured object of named values supporting numbers, strings, Booleans, arrays, and other objects
 
+## Popular Redis Use Cases
 Primarily, Redis is an in-memory database **used as a cache in front of another "real" database like MySQL** or PostgreSQL to help improve application performance. It leverages the speed of memory and alleviates load off the central application database for:
 
 - Data that changes infrequently  and is requested often
@@ -18,9 +30,30 @@ Examples of above data can include session or data caches and leaderboard or rol
 
 <img src="images/Redis-2.jpeg"/>
 
+### Caching
+Redis is a great choice for implementing a highly available in-memory cache to decrease data access latency, increase throughput, and ease the load off your relational or NoSQL database and application. Redis can serve frequently requested items at sub-millisecond response times, and enables you to easily scale for higher loads without growing the costlier backend. Database query results caching, persistent session caching, web page caching, and caching of frequently used objects such as images, files, and metadata are all popular examples of caching with Redis.
+
+### Chat, messaging, and queues
+Redis supports Pub/Sub with pattern matching and a variety of data structures such as lists, sorted sets, and hashes. This allows Redis to support high performance chat rooms, real-time comment streams, social media feeds and server intercommunication. The Redis List data structure makes it easy to implement a lightweight queue. Lists offer atomic operations as well as blocking capabilities, making them suitable for a variety of applications that require a reliable message broker or a circular list.
+
+### Gaming leaderboards
+Redis is a popular choice among game developers looking to build real-time leaderboards. **Simply use the Redis Sorted Set data structure, which provides uniqueness of elements while maintaining the list sorted by users' scores. Creating a real-time ranked list is as easy as updating a user's score each time it changes.** You can also use Sorted Sets to handle time series data by using timestamps as the score.
+
+### Session store
+Redis as an in-memory data store with high availability and persistence is a popular choice among application developers to store and manage session data for internet-scale applications. Redis provides the sub-millisecond latency, scale, and resiliency required to manage session data such as user profiles, credentials, session state, and user-specific personalization.
+
+### Rich media streaming
+Redis offers a fast, in-memory data store to power live streaming use cases. Redis can be used to store metadata about users' profiles and viewing histories, authentication information/tokens for millions of users, and manifest files to enable CDNs to stream videos to millions of mobile and desktop users at a time.
+
+### Geospatial
+Redis offers purpose-built in-memory data structures and operators to manage real-time geospatial data at scale and speed. Commands such as GEOADD, GEODIST, GEORADIUS, and GEORADIUSBYMEMBER to store, process, and analyze geospatial data in real-time make geospatial easy and fast with Redis. You can use Redis to add location-based features such as drive time, drive distance, and points of interest to your applications.
+
+### Real-time analytics
+Redis can be used with streaming solutions such as Apache Kafka and Amazon Kinesis as an in-memory data store to ingest, process, and analyze real-time data with sub-millisecond latency. Redis is an ideal choice for real-time analytics use cases such as social media analytics, ad targeting, personalization, and IoT.
+
 However, for many use cases, **Redis offers enough guarantees that it can be used as a full-fledged primary database**. Coupled with Redis plug-ins and its various High Availability (HA) setups, Redis as a database has become incredibly useful for certain scenarios and workloads.
 
-Another important aspect is that Redis blurred the lines between a cache and datastore. Important note to understand here is that **reading and manipulating data in memory is much faster than anything possible in traditional datastores using SSDs or HDDs**.
+Important note to understand here is that **reading and manipulating data in memory is much faster than anything possible in traditional datastores using SSDs or HDDs**.
 
 <img src="images/Redis-3.jpeg"/>
 
@@ -82,21 +115,19 @@ Using Redis Sentinel in this way allows for failure detection. This detection in
 ### Redis Cluster
 <img src="images/Redis-7.jpeg"/>
 
-I am sure many have thought about what happens when you can't store all your data in memory on one machine. Currently, the maximum RAM available in a single server is 24TIB, presently listed online at AWS. Granted, that's a lot, but for some systems, that isn't enough, even for a caching layer.
+I am sure many have thought about **what happens when you can't store all your data in memory on one machine.** Redis Cluster allows for the horizontal scaling of Redis.
 
-Redis Cluster allows for the horizontal scaling of Redis.
+Once we decide to use Redis Cluster, we have decided to spread the data we are storing across multiple machines, known as sharding. So each Redis instance in the cluster is considered a shard of the data as a whole.
 
-once we decide to use Redis Cluster, we have decided to spread the data we are storing across multiple machines, known as sharding. So each Redis instance in the cluster is considered a shard of the data as a whole.
-
-This brings about a new problem. If we push a key to the cluster, how do we know which Redis instance (shard) is holding that data? There are several ways to do this, but Redis Cluster uses algorithmic sharding.
+This brings about a new problem. If we push a key to the cluster, how do we know which Redis instance (shard) is holding that data? There are several ways to do this, but Redis Cluster uses **algorithmic sharding**.
 
 To find the shard for a given key, we hash the key and mod the total result by the number of shards. Then, using a deterministic hash function, meaning that a given key will always map to the same shard, we can reason about where a particular key will be when we read it in the future.
 
-What happens when we later want to add a new shard into the system? This process is called resharding.
+What happens when we later want to add a new shard into the system? This process is called **resharding**.
 
 Assuming the key 'foo' was mapped to shard zero after introducing a new shard, it may map to shard five. However, moving data around to reflect the new shard mapping would be slow and unrealistic if we need to grow the system quickly. It also has adverse effects on the availability of the Redis Cluster.
 
-Redis Cluster has devised a solution to this problem called Hashslot, to which all data is mapped. There are 16K hashslot. This gives us a reasonable way to spread data across the cluster, and when we add new shards, we simply move hashslots across the systems. By doing this, we just need to move hashlots from shard to shard and simplify the process of adding new primary instances into the cluster.
+Redis Cluster has devised a solution to this problem called Hashslot, to which all data is mapped. There are **16K hashslot**. This gives us a reasonable way to spread data across the cluster, and **when we add new shards, we simply move hashslots across the systems. By doing this, we just need to move hashlots from shard to shard and simplify the process of adding new primary instances into the cluster.**
 
 This is possible without any downtime, and minimal performance hit. Let's talk through an example.
 
