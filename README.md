@@ -139,19 +139,19 @@ This way of ensuring persistence is much more durable than RDB snapshots since i
 Then when possible, we flush it to disk with fsync (when this runs is configurable), it will be persisted. The downside is that the format isn't compact and uses more disk than RDB files.
 
 ### Why not both?
-RDB + AOF: It is possible to combine AOF and RDB in the same Redis instance. If durability in exchange for some speed is a tradeoff, you are willing to make it. I think this is an acceptable way to set up Redis. In the case of a restart, remember that if both are enabled, Redis will use AOF to reconstruct the data since it's the most complete.
+RDB + AOF: It is possible to combine AOF and RDB in the same Redis instance. If durability in exchange for some speed is a tradeoff, you are willing to make it. I think this is an acceptable way to set up Redis. **In the case of a restart, remember that if both are enabled, Redis will use AOF to reconstruct the data since it's the most complete.**
 
 ## Forking
-Now that we understand the types of persistence, let’s discuss how we actually go about doing it in a single threaded application like Redis.
+Now that we understand the types of persistence, let’s discuss how we actually go about doing it in a **single threaded application like Redis**.
 
 <img src="images/Redis-9.jpeg"/>
 
-This coolest part of Redis in my opinion is how it leverages forking and copy-on-write to facilitate data persistence performantly.
+This coolest part of Redis in my opinion is how **it leverages forking and copy-on-write to facilitate data persistence performantly**.
 
-Forking is a way for operating systems to create new processes by creating copies of themselves. With this, you get a new process ID and a few other bits of information and handles, so the newly forked process (child) can talk to the original process parent.
+Forking is a way for operating systems to **create new processes by creating copies of themselves**. With this, you get a new process ID and a few other bits of information and handles, so the newly forked process (child) can talk to the original process parent.
 
 Now here is where things get interesting. Redis is a process with tons of memory allocated to it, so how does it make a copy without running out of memory?
 
-When you fork a process, the parent and child share memory, and in that child process Redis begins the snapshotting (Redis) process. This is made possible by a memory sharing technique called copy-on-write —which passses references to the memory at the time the fork was created. If no changes occur while the child process is persisting to disk, no new allocations are made.
+**When you fork a process, the parent and child share memory, and in that child process Redis begins the snapshotting (Redis) process. This is made possible by a memory sharing technique called copy-on-write which passses references to the memory at the time the fork was created. If no changes occur while the child process is persisting to disk, no new allocations are made.**
 
-In the case where there are changes, the kernel keeps track of references to each page, and if there are more than one to specific page the changes are written to new pages. The child process is fully unaware of the change and has consistent memory snapshot. Therefore only fraction of the memory is used and we are able to achieve a point in time snapshot of potentially gigabytes of memory extremely quickly and efficiently!
+**In the case where there are changes, the kernel keeps track of references to each page, and if there are more than one to specific page the changes are written to new pages. The child process is fully unaware of the change and has consistent memory snapshot.** Therefore only fraction of the memory is used and we are able to achieve a point in time snapshot of potentially gigabytes of memory extremely quickly and efficiently!
