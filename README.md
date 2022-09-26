@@ -20,6 +20,9 @@ Therefore, taking the cue from its literal meaning, Kubernetes hopes to become a
 Kubernetes is an **automated container orchestration platform**, which is responsible for deploying, elastically scaling, and managing applications based on containers.
 
 ## Core Features of Kubernetes
+
+<img src="images/k8s-benefit.png">
+
 The following sections describe the key capabilities of Kubernetes
 
 ### 1) Scheduling
@@ -30,8 +33,9 @@ The following sections describe the key capabilities of Kubernetes
 
 <img src="images/k8s-scheduling.png">
 
-2) Automatic Recovery
-Kubernetes provides node health check. This feature allows the system to monitor all hosts in the cluster. When a host or software problem occurs, Kubernetes automatically detects the fault and automatically migrates containers that are running on the failed node to a healthy host to automatically recover the containers in the cluster.
+## 2) Automatic Recovery
+- Kubernetes provides node health check. This feature allows the system to monitor all hosts in the cluster.
+- When a host or software problem occurs, Kubernetes automatically detects the fault and automatically migrates containers that are running on the failed node to a healthy host to automatically recover the containers in the cluster.
 
 <img src="images/auto-recovery.png">
 
