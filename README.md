@@ -1,13 +1,16 @@
 # Kubernetes — Deep dive
+- The name Kubernetes originates from Greek and means **helmsman or pilot**.
+- "K8s (or "ks" in some articles), is an abbreviation derived by replacing the eight letters "ubernete" with "8."
 
-The name Kubernetes originates from Greek and means **helmsman or pilot**. "K8s (or "ks" in some articles), is an abbreviation derived by replacing the eight letters "ubernete" with "8." If you are wondering why the name Kubernetes which means "helmsman" was chosen, then let's take a look at the following figure.
+If you are wondering why the name Kubernetes which means "helmsman" was chosen, then let's take a look at the following figure.
 
 <img src="images/docker-ship.jpeg"/>
 
 Therefore, taking the cue from its literal meaning, Kubernetes hopes to become a ship that transports containers. In other words, it intends to help manage these containers.
 
 ## What is Docker?
-Docker is a platform which **packages an application and all its dependencies together in the form of containers**. This containerization aspect of Docker ensures that the application works in any environment.
+- Docker is a platform which **packages an application and all its dependencies together in the form of containers**.
+- This containerization aspect of Docker ensures that the application works in any environment.
 
 <img src="images/docker-build.png"/>
 
@@ -18,8 +21,12 @@ Kubernetes is an **automated container orchestration platform**, which is respon
 
 ## Core Features of Kubernetes
 The following sections describe the key capabilities of Kubernetes
-1) Scheduling
-In Kubernetes, a container submitted by a user is deployed onto a node in a cluster managed by Kubernetes. The scheduler in Kubernetes is the component that implements this capability. It monitors the size and specifications of the container that is being scheduled. For example, the scheduler estimates the required CPU and memory capacities and then places the container onto a node that is relatively idle in the cluster. In this example, the scheduler may place the red container onto the second idle node to complete the scheduling task.
+
+### 1) Scheduling
+- The scheduler in Kubernetes control plane is the component that implements this capability.
+- A container submitted by a user is deployed onto a node in a cluster managed by Kubernetes.
+- It monitors the size and specifications of the container that is being scheduled.
+- A pod can be pinned to a particular node.
 
 <img src="images/k8s-scheduling.png">
 
@@ -131,4 +138,5 @@ For example, a deployment may represent a set of pods or is an abstraction of a 
 
 ## CI/CD Architecture
 
+<img src="images/cd-cd.png">
 
