@@ -62,7 +62,13 @@ In Kubernetes, the master runs four key components including the API server, con
 - **etcd**: It is a distributed storage system and all original information required by the API server is stored in etcd. As a high-availability system, etcd is responsible for ensuring that all the components of the master in Kubernetes are highly available.
 
 ### Kubernetes Architecture - Nodes
-In Kubernetes, service loads are actually carried by nodes, with each piece of service load running as a pod. The concept of a pod will be introduced later. In addition, one or more containers are running in a pod. The component that actually runs these pods is called kubelet, which is also the most critical component on the node. It receives the running status of the desired pod from the API server and submits the running status to the container runtime component shown in the following figure.
+- Each Node is managed by the control plane.
+- A Node is a worker machine in Kubernetes and may be either a virtual or a physical machine, depending on the cluster.
+- A Node can have multiple pods, and the Kubernetes control plane automatically handles scheduling the pods across the Nodes in the cluster. The control plane's automatic scheduling takes into account the available resources on each Node.
+
+Every Kubernetes Node runs at least:
+- **Kubelet**, a process responsible for communication between the Kubernetes control plane and the Node; it manages the Pods and the containers running on a machine.
+- A container runtime (like **Docker**) responsible for pulling the container image from a registry, unpacking the container, and running the application.
 
 <img src="images/k8s-arch- node.png">
 
