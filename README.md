@@ -33,19 +33,21 @@ The following sections describe the key capabilities of Kubernetes
 
 <img src="images/k8s-scheduling.png">
 
-## 2) Automatic Recovery
+### 2) Automatic Recovery
 - Kubernetes provides node health check. This feature allows the system to monitor all hosts in the cluster.
 - When a host or software problem occurs, Kubernetes automatically detects the fault and automatically migrates containers that are running on the failed node to a healthy host to automatically recover the containers in the cluster.
 
 <img src="images/auto-recovery.png">
 
-3) Horizontal Scaling
-Kubernetes is capable of checking service loads through monitoring. If the CPU usage of service is excessively high or the response to service is excessively slow, Kubernetes scale-out that specific service accordingly. In the following example, the first yellow node is excessively busy, hence, Kubernetes distributes loads of the yellow node to three pieces. Then, through load balancing, Kubernetes evenly distributes the original loads on the first yellow node to three yellow nodes, including the first yellow node itself, to increase the response speed.
+### 3) Horizontal Scaling
+- Kubernetes is capable of checking service loads through monitoring.
+- If the CPU usage of service is excessively high or the response to service is excessively slow, Kubernetes scale-out that specific service accordingly. 
 
-<img src="images/k8s-horizontal-scaling.png">
+<img src="images/k8s-horizontal-scaling.jpeg">
 
 ## Kubernetes Architecture
-The Kubernetes architecture is a typical two-layer server-client architecture. As the central control node, the master connects to multiple nodes. All UI clients and user-side components are connected to the master to send desired states or to-be-executed commands to the master. Then, the master sends these commands or states to corresponding nodes for final execution.
+- The Kubernetes architecture is a typical **two-layer server-client architecture**.
+- As the central control node, the master connects to multiple nodes. All UI clients and user-side components are connected to the master to send desired states or to-be-executed commands to the master. Then, the master sends these commands or states to corresponding nodes for final execution.
 
 <img src="images/k8s-architecture.png">
 
