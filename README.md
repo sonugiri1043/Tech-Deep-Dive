@@ -35,7 +35,17 @@ Containers are similar to VMs, but they have relaxed isolation properties to sha
 **Kubernetes uses Docker as the underlying container platform**.
 
 ## What Is Kubernetes?
-Kubernetes is an **automated container orchestration platform**, which is responsible for deploying, elastically scaling, and managing applications based on containers.
+Kubernetes is an **automated container orchestration platform**, which is responsible for **deploying, elastically scaling, and managing applications** based on containers.
+
+Following are the  other popular container orchestration engines:
+- Docker swarm
+- Apache Mesos
+
+## Why Kubernetes?
+- Was originally designed at Google. Have been running at Google for years now.
+- Battle-tested with applications like Gmail, youtube, etc
+- Very active development ecosystem. Backed by industry leaders like Google, Microsoft, Amazon, IBM, Oracle, etc
+- Matured & stable. Used by most of the big companies today
 
 ## Core Features of Kubernetes
 
