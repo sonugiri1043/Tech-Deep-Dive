@@ -126,40 +126,36 @@ spec:
 <img src="images/k8s-deployment.png">
 
 ### 4) Service
-A service provides static IP addresses for one or more pod instances. In the preceding example, one deployment may include two or more identical pods. For an external user, accessing any pod is the same, and therefore load balancing is preferred. To achieve load balancing, the user wants to access a static virtual IP (VIP) address rather than to know the specific IP addresses of all pods. As mentioned earlier, a pod may be in the terminal go (terminated) status. If this is the case, it may be replaced by a new pod.
+- An **abstract way to expose an application running on a set of Pods as a network service**.
+- A service provides static IP addresses for one or more pod instances.
+- For an external user, accessing any pod is the same, and therefore load balancing is preferred. To achieve load balancing, the user wants to access a static virtual IP (VIP) address rather than to know the specific IP addresses of all pods.
+- For an external user, if the specific IP addresses of multiple pods are provided, this user needs to constantly update the IP addresses of pods. If a pod fails and then restarts, the abstraction may abstract the access to all pods into a third-party IP address. **The abstraction that implements this feature in Kubernetes is called service.** Kubernetes supports multiple ingress modes for services, which include the ClusterIP, NodePort, and LoadBalancer modes. It also supports access through networking by using kube-proxy.
 
-For an external user, if the specific IP addresses of multiple pods are provided, this user needs to constantly update the IP addresses of pods. If a pod fails and then restarts, the abstraction may abstract the access to all pods into a third-party IP address. The abstraction that implements this feature in Kubernetes is called service. Kubernetes supports multiple ingress modes for services, which include the ClusterIP, NodePort, and LoadBalancer modes. It also supports access through networking by using kube-proxy.
+<img src="images/k8s-service.jpeg">
 
-<img src="images/k8s-service.png">
+### 5) Namespace
+- A namespace is used for implementing logical isolation within a cluster, which involves authentication and resource management.
+- Each resource in Kubernetes, such as the pod, deployment, and service, belongs to a namespace.
+- Resource names must be unique within a namespace, but can be the same in different namespaces. 
 
-Concept 5) Namespace
-
-A namespace is used for implementing logical isolation within a cluster, which involves authentication and resource management. Each resource in Kubernetes, such as the pod, deployment, and service, belongs to a namespace. Resource names must be unique within a namespace, but can be the same in different namespaces. The following describes a use case of namespaces. At Alibaba, there are many business units (BUs). To isolate each BU at the view level and make them different in authentication and compute unified device architecture (CUDA), we will use namespaces to provide each BU with such a visual isolation
-
-<img src="images/k8s-namespace.png">
+<img src="images/k8s-namespace.jpeg">
 
 ## Kubernetes API
-The following diagram describes the basics of the Kubernetes API. From a high-level perspective, the Kubernetes API is based on HTTP and JSON. Specifically, users access the API through HTTP, and the content of the accessed API is in the JSON format. In Kubernetes, the kubectl command-line tool, the Kubernetes UI, or sometimes curl is used to directly communicate with Kubernetes based on HTTP and JSON. In the following example, the HTTP access path of a pod consists of the following parts: the API, apiVesion: V1, namespace, pod, and pod name.
+The following diagram describes the basics of the Kubernetes API.
 
 <img src="images/k8s-API.png">
 
-In contrast, if we submit a pod or get a pod, the content of the pod is expressed in the JSON or YAML format. The preceding figure shows a YAML file example. In this YAML file, the description of the pod consists of several parts.
+- From a high-level perspective, the Kubernetes API is based on HTTP and JSON.
+- Specifically, users access the API through HTTP, and the content of the accessed API is in the JSON format.
+- In Kubernetes, the kubectl command-line tool, the Kubernetes UI, or sometimes curl is used to directly communicate with Kubernetes based on HTTP and JSON. In the above example, the HTTP access path of a pod consists of the following parts: the API, apiVesion: V1, namespace, pod, and pod name.
 
-Generally, the first part is the API version. In this example, the API version is V1. The second part is the kind of resource that is being worked on. For example, if the kind of the resource is a pod, the name of this pod is written in the metadata. If the kind of resource is Nginx, we will add some labels to it. The concept of a label will be described later. In metadata, sometimes we also write annotations to additionally describe the resource from the perspective of users.
 
-Another important part is the spec, which indicates the desired state of the pod. For example, the spec shows the containers that need to be run in the pod, the image of an Nginx container included in the pod, and the ID of the exposed port.
+## Kubernetes – Services and Labels
+- Labels enable users to map their own organizational structures onto system objects in a loosely coupled fashion, without requiring clients to store these mappings.
+- Labels are key/value pairs that are attached to objects, such as pods. Labels are intended to be used to specify identifying attributes of objects that are meaningful and relevant to users, but do not directly imply semantics to the core system.
 
-When we obtain this resource through the Kubernetes API, the spec usually comes along with an item named status, which indicates the current state of this resource. For example, a pod may be in the scheduling, running, or terminated status. The terminated status means that the pod has been executed.
-
-While describing the API, we mentioned an interesting metadata element called "label". A label may be a set of key-value pairs. For example, for the first pod in the following figure, the label may be color red, which indicates that the pod is red. It is also possible to add other labels, such as size big, which indicates that the size is defined as big. In addition, it is possible to add a set of labels. These labels are queried by a selector. In fact, this capability is very similar to that of an SQL select statement. For example, you may select from the three pods shown in the following figure. When the color is named red, implying that the color of a pod is red, note that only two pods are selected because only their labels indicate the red color. The label of another pod says that the color is yellow, indicating that this pod is yellow and therefore is not selected.
-
-<img src="images/k8s-API-label.png">
-
-Labels allow the Kubernetes API to filter these resources. The filtering is also a default way to indicate a collection of resources in Kubernetes.
-
-For example, a deployment may represent a set of pods or is an abstraction of a set of pods. This set of pods is indicated by using a label selector. As described previously, a service corresponds to one or more pods to access them in a centralized way. In this description, the set of pods are also selected by the label selector.
+<img src="images/k8s-label.png">
 
 ## CI/CD Architecture
 
 <img src="images/cd-cd.png">
-
