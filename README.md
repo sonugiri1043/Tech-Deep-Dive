@@ -42,6 +42,7 @@ The following sections describe the key capabilities of Kubernetes
 ### 3) Horizontal Scaling
 - Kubernetes is capable of checking service loads through monitoring.
 - If the CPU usage of service is excessively high or the response to service is excessively slow, Kubernetes scale-out that specific service accordingly. 
+- Limitations is that it does not work with DaemonSets.
 
 <img src="images/k8s-horizontal-scaling.jpeg">
 
@@ -49,19 +50,18 @@ The following sections describe the key capabilities of Kubernetes
 - The Kubernetes architecture is a typical **two-layer server-client architecture**.
 - As the central control node, the master connects to multiple nodes. All UI clients and user-side components are connected to the master to send desired states or to-be-executed commands to the master. Then, the master sends these commands or states to corresponding nodes for final execution.
 
-<img src="images/k8s-architecture.png">
+<img src="images/k8s-arch.png">
 
 In Kubernetes, the master runs four key components including the API server, controller, scheduler and etcd. The following figure shows the detailed Kubernetes architecture
 
-<img src="images/k8s-arch-1.png">
+<img src="images/k8s-arch-detail.png">
 
-API Server: As the name implies, the API server processes API operations. All the other components in Kubernetes are connected to the API server. Generally, these components are not individually connected to each other. However, they depend on the API server to transmit messages to each other.
-Controller: The controllers shipped with Kubernetes watch and manage the cluster state. For example, in the preceding examples, the automatic recovery of containers and automatic horizontal scaling are both done by the controllers in Kubernetes.
-Scheduler: As the name implies, the scheduler performs scheduling. As described in the first example, the scheduler places a container submitted by a user onto an appropriate node based on the requested CPU and memory capacities.
-etcd: It is a distributed storage system and all original information required by the API server is stored in etcd. As a high-availability system, etcd is responsible for ensuring that all the components of the master in Kubernetes are highly available.
+- **API Server**: As the name implies, the API server processes API operations. All the other components in Kubernetes are connected to the API server. Generally, these components are not individually connected to each other. However, they depend on the API server to transmit messages to each other.
+- **Controller**: The controllers shipped with Kubernetes watch and manage the cluster state. For example, in the preceding examples, the automatic recovery of containers and automatic horizontal scaling are both done by the controllers in Kubernetes.
+- **Scheduler**: As the name implies, the scheduler performs scheduling. As described in the first example, the scheduler places a container submitted by a user onto an appropriate node based on the requested CPU and memory capacities.
+- **etcd**: It is a distributed storage system and all original information required by the API server is stored in etcd. As a high-availability system, etcd is responsible for ensuring that all the components of the master in Kubernetes are highly available.
 
-Kubernetes Architecture - Nodes
-
+### Kubernetes Architecture - Nodes
 In Kubernetes, service loads are actually carried by nodes, with each piece of service load running as a pod. The concept of a pod will be introduced later. In addition, one or more containers are running in a pod. The component that actually runs these pods is called kubelet, which is also the most critical component on the node. It receives the running status of the desired pod from the API server and submits the running status to the container runtime component shown in the following figure.
 
 <img src="images/k8s-arch- node.png">
