@@ -125,6 +125,42 @@ spec:
 
 <img src="images/k8s-deployment.png">
 
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: authenticator
+  name: authenticator
+  namespace: test
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: authenticator
+  template:
+    metadata:
+      labels:
+        app: authenticator
+    spec:
+      containers:
+      - image: dockerhub.com/authenticator:79
+        imagePullPolicy: Always
+        name: authenticator
+        ports:
+        - containerPort: 5001
+        - name: applog
+          mountPath: /services/logs/
+      - name: fluentd
+        image: dockerhub.com/fluentd-kubernetes-daemonset:v1.15.2-debian-elasticsearch7-1.0
+        volumeMounts:
+          - name: applog
+            mountPath: /services/logs/
+      volumes:
+      - name: applog
+        emptyDir: {}
+```
+
 ### 4) Service
 - An **abstract way to expose an application running on a set of Pods as a network service**.
 - A service provides static IP addresses for one or more pod instances.
@@ -132,6 +168,25 @@ spec:
 - For an external user, if the specific IP addresses of multiple pods are provided, this user needs to constantly update the IP addresses of pods. If a pod fails and then restarts, the abstraction may abstract the access to all pods into a third-party IP address. **The abstraction that implements this feature in Kubernetes is called service.** Kubernetes supports multiple ingress modes for services, which include the ClusterIP, NodePort, and LoadBalancer modes. It also supports access through networking by using kube-proxy.
 
 <img src="images/k8s-service.jpeg">
+
+```yaml
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    app: authenticator
+  name: authenticator
+  namespace: test
+spec:
+  type: ClusterIP
+  selector:
+    app: authenticator
+  ports:
+    - name: http
+      protocol: TCP
+      port: 5001
+      targetPort: 5001
+```
 
 ### 5) Namespace
 - A namespace is used for implementing logical isolation within a cluster, which involves authentication and resource management.
@@ -148,7 +203,6 @@ The following diagram describes the basics of the Kubernetes API.
 - From a high-level perspective, the Kubernetes API is based on HTTP and JSON.
 - Specifically, users access the API through HTTP, and the content of the accessed API is in the JSON format.
 - In Kubernetes, the kubectl command-line tool, the Kubernetes UI, or sometimes curl is used to directly communicate with Kubernetes based on HTTP and JSON. In the above example, the HTTP access path of a pod consists of the following parts: the API, apiVesion: V1, namespace, pod, and pod name.
-
 
 ## Kubernetes – Services and Labels
 - Labels enable users to map their own organizational structures onto system objects in a loosely coupled fashion, without requiring clients to store these mappings.
