@@ -8,6 +8,24 @@ If you are wondering why the name Kubernetes which means "helmsman" was chosen, 
 
 Therefore, taking the cue from its literal meaning, Kubernetes hopes to become a ship that transports containers. In other words, it intends to help manage these containers.
 
+## A brief history of containerization
+
+<img src="images/k8s-histroy.png">
+
+### Traditional deployment
+Early on, organizations ran applications on physical servers. There was no way to define resource boundaries for applications in a physical server, and this caused resource allocation issues.
+
+### Virtualized Deployment
+It allows you to run multiple Virtual Machines (VMs) on a single physical server’s CPU. Virtualization allows applications to be isolated between VMs and provides a level of security as the information of one application cannot be freely accessed by another application.
+
+Virtualization allows better utilization of resources in a physical server and allows better scalability because an application can be added or updated easily, reduces hardware costs, and much more. With virtualization you can present a set of physical resources as a cluster of disposable virtual machines.
+
+Each VM is a full machine running all the components, including its own operating system, on top of the virtualized hardware.
+
+### Container deployment
+
+Containers are similar to VMs, but they have relaxed isolation properties to share the Operating System (OS) among the applications. Therefore, containers are considered lightweight. **Similar to a VM, a container has its own filesystem, CPU, memory, process space, and more**. As they are decoupled from the underlying infrastructure, they are portable across clouds and OS distributions
+
 ## What is Docker?
 - Docker is a platform which **packages an application and all its dependencies together in the form of containers**.
 - This containerization aspect of Docker ensures that the application works in any environment.
