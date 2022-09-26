@@ -72,49 +72,60 @@ Every Kubernetes Node runs at least:
 
 <img src="images/k8s-arch- node.png">
 
-It's critical to manage the storage and network for creating the running environment on the OS for a container and finally running the container or the pod. Kubernetes does not directly perform any storage or network operations but, depends on storage plug-ins or network plug-ins for completing these operations. Usually, users or cloud vendors develop corresponding storage plug-ins or network plug-ins to perform actual storage or network operations.
-
-Kubernetes also includes a Kubernetes network, which provides a service network for networking. The concept of service will be introduced later. The component that truly completes service networking is kube-proxy. It sets up a cluster network in Kubernetes by leveraging iptables. So far, you have learned about all the four components on a node. In Kubernetes, a node does not directly interact with users but, depends on the master. Users deliver messages to a node through the master. In Kubernetes, each node runs all of the preceding four component
-
 The following example demonstrates how these components interact with each other in the Kubernetes architecture.
 
 <img src="images/k8s-arch-example.png">
 
-A user may submit a pod deployment request to Kubernetes through the UI or CLI. This request is first submitted to the API server in Kubernetes through the CLI or UI. Then, the API server writes the request information into the etcd store. Lastly, the scheduler obtains this information through the watch or notification mechanism of the API server. The information indicates that the pod needs to be scheduled.
+- A user may submit a pod deployment request to Kubernetes through the UI or CLI.
+- This request is first submitted to the API server in Kubernetes through the CLI or UI.
+- The API server writes the request information into the etcd store.
+- Lastly, the scheduler obtains this information through the watch or notification mechanism of the API server.
+- The information indicates that the pod needs to be scheduled.
 
 At this time, the scheduler makes a scheduling decision based on its memory status. After completing the scheduling, it reports to the API server with "OK! This pod needs to be scheduled to a certain node."
 
-After receiving this report, the API server writes the scheduling result into etcd. Then, the API server notifies the corresponding node to start the pod. After receiving this notification, kubelet on the corresponding node communicates with container runtime to actually start configuring the container and the running environment of the container. In addition, kubelet schedules the storage plug-in to configure storage and the network plug-in to configure the network, respectively. This example shows how these components communicate with each other and work together to complete the scheduling of a pod.
+- After receiving this report, the API server writes the scheduling result into etcd.
+- Then, the API server notifies the corresponding node to start the pod.
+- After receiving this notification, kubelet on the corresponding node communicates with container runtime to actually start configuring the container and the running environment of the container.
+- In addition, kubelet schedules the storage plug-in to configure storage and the network plug-in to configure the network, respectively.
+
+This example shows how these components communicate with each other and work together to complete the scheduling of a pod.
 
 ## Core Concepts
 
-Concept 1) Pod
+### 1) Pod
+- Pods are the smallest deployable units of computing that you can create and manage in Kubernetes.
+- A Pod (as in a pod of whales or pea pod) is a group of one or more containers, with **shared storage and network resources**, and a specification for how to run the containers.
 
-A pod is the smallest scheduling and resource unit in Kubernetes. A user creates a pod through the Pod API of Kubernetes so that Kubernetes schedules the pod. Specifically, the pod is placed and runs on a node managed by Kubernetes. In short, a pod is the abstraction of a group of containers, containing one or more containers.
-
-As shown in the following figure, the pod contains two containers, and each container specifies its required resource size, such as 1 GB memory and 1 CPU core, or 0.5 GB memory and 0.5 CPU core.
-
-This pod also contains other required resources, such as the storage resource called volume, or 100 GB or 20 GB memory.
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx:1.14.2
+    ports:
+    - containerPort: 80
+```
 
 <img src="images/k8s-pods.png">
 
-In a pod, define the way to run a container, such as running the command or the environment variable of the container. The pod also provides a shared running environment for the containers within it. In this case, these containers share a network environment and directly find each other through the localhost. In addition, pods are isolated from each other.
+### 2) Volume
 
-Concept 2) Volume
-
-In Kubernetes, a volume is used to manage storage and declare the file directories that are accessed by containers in a pod. A volume can be mounted to the specified path of one or more containers in a pod.
-
-The volume itself is an abstraction. One volume supports multiple types of backend storage. For example, the volume in Kubernetes supports many storage plug-ins. It supports local storage, distributed storage such as Ceph and GlusterFS, and cloud storage such as disks in Alibaba Cloud, AWS, and Google
+- In Kubernetes, a volume is used to manage storage and declare the file directories that are accessed by containers in a pod.
+- A volume can be mounted to the specified path of one or more containers in a pod.
 
 <img src="images/k8s-volume.png">
 
-Concept 3) Deployment
-
-A deployment is an abstraction on top of a pod and defines the number of replicas for a set of pods and pod versions. Generally, this abstraction is used to actually manage applications, and pods are the smallest units that form a deployment. In Kubernetes, a controller maintains the number of pods in deployment and helps the deployment automatically recover failed pods. For example, define a deployment that contains two pods. If one pod fails, a corresponding controller detects the failure and restores the number of pods in the deployment from one to two by creating a pod. The controllers in Kubernetes also allow us to implement published policies, such as rolling upgrades, regeneration upgrades, or version rollback
+### 3) Deployment
+- A deployment is an **abstraction on top of a pod and defines the number of replicas for a set of pods and pod versions**.
+- A Deployment runs multiple replicas of your application and automatically replaces and creates new instances against the one's which gets failed or become unresponsive. In a way it supervises the pods creation and maintains rollout and rollback activities.
 
 <img src="images/k8s-deployment.png">
 
-Concept 4) Service
+### 4) Service
 A service provides static IP addresses for one or more pod instances. In the preceding example, one deployment may include two or more identical pods. For an external user, accessing any pod is the same, and therefore load balancing is preferred. To achieve load balancing, the user wants to access a static virtual IP (VIP) address rather than to know the specific IP addresses of all pods. As mentioned earlier, a pod may be in the terminal go (terminated) status. If this is the case, it may be replaced by a new pod.
 
 For an external user, if the specific IP addresses of multiple pods are provided, this user needs to constantly update the IP addresses of pods. If a pod fails and then restarts, the abstraction may abstract the access to all pods into a third-party IP address. The abstraction that implements this feature in Kubernetes is called service. Kubernetes supports multiple ingress modes for services, which include the ClusterIP, NodePort, and LoadBalancer modes. It also supports access through networking by using kube-proxy.
