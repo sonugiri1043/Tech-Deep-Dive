@@ -126,7 +126,7 @@ $ kubectl logs mypod-0 -c myapp
 Nothing beats getting a shell to a running pod! Here’s how to do it (you can skip the -c argument if you have only one container running inside the pod):
 
 ```
-$ kubectl -n NS exec -it POD -c CONTAINER -- s
+$ kubectl -n NS exec -it POD -c CONTAINER -- sh
 ```
 
 You can quickly create a link between a given port number on a given pod running inside the Kubernetes cluster and your computer (this is called port forwarding). Here is how to do it, assuming your pod exposes port 8080:
